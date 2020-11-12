@@ -2,7 +2,8 @@ import React, {useState, useEffect, useRef} from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
-import AddCar from './AddCar'
+import AddCar from './AddCar';
+import EditCar from './EditCar';
  
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-material.css';
@@ -21,13 +22,19 @@ function Carlist() {
     const columns = [
         {headerName: 'Brand', field: 'brand', sortable: true, filter: true },
         {headerName: 'Model', field: 'model', sortable: true, filter: true },
-        {headerName: 'Color', field: 'color', sortable: true, filter: true },
-        {headerName: 'Fuel', field: 'fuel', sortable: true, filter: true },
-        {headerName: 'Year', field: 'year', sortable: true, filter: true },
-        {headerName: 'Price', field: 'price', sortable: true, filter: true },
+        {headerName: 'Color', field: 'color', sortable: true, filter: true, width: 120 },
+        {headerName: 'Fuel', field: 'fuel', sortable: true, filter: true, width: 120 },
+        {headerName: 'Year', field: 'year', sortable: true, filter: true, width: 120 },
+        {headerName: 'Price', field: 'price', sortable: true, filter: true, width: 120 },
         {   
             headerName: '', 
-            width: 90,
+            width: 80,
+            field: '_links.self.href', 
+            cellRendererFramework: params => <EditCar  updateCar={updateCar} params={params}/>
+        },
+        {   
+            headerName: '', 
+            width: 80,
             field: '_links.self.href', 
             cellRendererFramework: params => <Button 
                                                 color="secondary"
@@ -70,7 +77,19 @@ function Carlist() {
         .then(_ => setMsg('Car added succesfully'))
         .then(_ => setOpen(true))
         .catch(err => console.error(err))
-      }
+    };
+
+    const updateCar = (link, car) => {
+        fetch(link, {
+          method: 'PUT',
+          headers: {'Content-type' : 'application/json'},
+          body: JSON.stringify(car)
+        })
+        .then(_ => getCars())
+        .then(_ => setMsg('Car updated succesfully'))
+        .then(_ => setOpen(true))
+        .catch(err => console.error(err))
+    }; 
 
     return (
         <div>

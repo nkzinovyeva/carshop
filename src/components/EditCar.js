@@ -11,7 +11,7 @@ import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-material.css';
 
 
-function AddCar(props) {
+function EditCar(props) {
     const [open, setOpen] = useState(false);
     const [car, setCar] = useState({
         brand: '',
@@ -22,8 +22,17 @@ function AddCar(props) {
         year: ''
     });
 
-
     const handleClickOpen = () => {
+        console.log(props.params)
+        setCar({
+            brand: props.params.data.brand,
+            model: props.params.data.model,
+            color: props.params.data.color,
+            fuel: props.params.data.fuel,
+            price: props.params.data.price,
+            year: props.params.data.year
+        });
+    
         setOpen(true);
       };
      
@@ -36,21 +45,21 @@ function AddCar(props) {
       }
 
       const handleSave = () => {
-        props.addCar(car);
+        props.updateCar(props.params.value, car);
         handleClose()
       };
      
   
     return (
         <div>
-      <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-        Add Car
+      <Button size='small' color="primary" onClick={handleClickOpen}>
+        Edit
       </Button>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">New Car</DialogTitle>
+        <DialogTitle id="form-dialog-title">Update Car</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            To add a new car provide the info.
+            Please provide the info.
           </DialogContentText>
             <TextField
                 autoFocus
@@ -115,4 +124,4 @@ function AddCar(props) {
     );
 }
 
-export default AddCar;
+export default EditCar;
